@@ -1,7 +1,7 @@
 {
   "name": "lottery-wheel",
   "version": "1.0.0",
-  "description": "",
+  "description": "A library helps you performing a wheel for lottery game.",
   "main": "index.js",
   "scripts": {
     "build": "npm install && gulp build",
@@ -15,7 +15,8 @@
   "keywords": [
     "browser",
     "javascript",
-    "turntable"
+    "turntable",
+    "lottery"
   ],
   "author": "zoron (https://github.com/fralonra/)",
   "license": "MIT",

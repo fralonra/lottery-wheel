@@ -1,3 +1,4 @@
 .eslintrc.json
 .travis.yml
 gulpfile.js
+doc
