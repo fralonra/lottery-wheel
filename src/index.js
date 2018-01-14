@@ -118,7 +118,6 @@ class Wheel {
     for (let i in opt.data) {
       let d = opt.data[i];
       const r = opt.inRadius;
-      const m = new Snap.Matrix();
 
       if (typeof d === 'string') {
         d = {
