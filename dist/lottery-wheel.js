@@ -9128,28 +9128,28 @@ var baseFontSize = 16;
 
 var themes = {
   default: {
-    out: 'red',
-    in: 'gold',
+    border: 'red',
+    prize: 'gold',
     button: 'darkorange',
-    inLine: 'red',
-    fontColor: 'red',
-    buttonFontColor: 'white'
+    line: 'red',
+    prizeFont: 'red',
+    buttonFont: 'white'
   },
   light: {
-    out: 'red',
-    in: 'gold',
-    button: 'darkorange',
-    inLine: 'red',
-    fontColor: 'red',
-    buttonFontColor: 'white'
+    border: 'orange',
+    prize: 'lightyellow',
+    button: 'tomato',
+    line: 'orange',
+    prizeFont: 'orange',
+    buttonFont: 'white'
   },
   dark: {
-    out: 'red',
-    in: 'gold',
-    button: 'darkorange',
-    inLine: 'red',
-    fontColor: 'red',
-    buttonFontColor: 'white'
+    border: 'silver',
+    prize: 'dimgray',
+    button: 'darkslategray',
+    line: 'silver',
+    prizeFont: 'silver',
+    buttonFont: 'lightyellow'
   }
 };
 
@@ -9162,15 +9162,15 @@ var Wheel = function () {
     var self = this;
     self.option = {
       pos: [0, 0], // 左上角坐标
-      radius: 50, // 半径
+      radius: 100, // 半径
       // inRadius: , // 中圈半径
       buttonWidth: 50, // 按钮宽度
       buttonDeg: 80, // 顶针夹角
-      buttonText: '抽奖', // 按钮文字
+      buttonText: 'Draw', // 按钮文字
       // fontSize: , // 文字大小
       // buttonFontSize: , // 按钮文字大小,
       textBottomPercentage: 0.6, // 文字底部对于圆半径的百分比
-      limit: 1, // 抽奖限定次数
+      limit: 0, // 抽奖限定次数
       duration: 5000, // 转动持续时间
       turn: 4, // 最小转动圈数
       clockwise: true, // 顺时针旋转
@@ -9181,8 +9181,8 @@ var Wheel = function () {
       self.option[k] = option[k];
     });
 
-    if (!self.option.el) throw new Error('el is undefined in Turntable');
-    if (!self.option.data) throw new Error('data is undefined in Turntable');
+    if (!self.option.el) throw new Error('el is undefined in Wheel');
+    if (!self.option.data) throw new Error('data is undefined in Wheel');
     self[count] = 0;
     self[rotation] = 0;
     self[totalPies] = 1;
@@ -9197,8 +9197,8 @@ var Wheel = function () {
     value: function draw() {
       var self = this;
       var opt = self.option;
-      if (!opt.el) throw new Error('el is undefined in Turntable');
-      if (!opt.data) throw new Error('data is undefined in Turntable');
+      if (!opt.el) throw new Error('el is undefined in Wheel');
+      if (!opt.data) throw new Error('data is undefined in Wheel');
 
       // theme
       var theme = themes[opt.theme] ? opt.theme : 'default';
@@ -9225,18 +9225,18 @@ var Wheel = function () {
       opt.center = center;
       var obj = svg.circle(center[0], center[1], opt.radius);
       obj.attr({
-        fill: opt.color.out
+        fill: opt.color.border
       });
       obj = svg.circle(center[0], center[1], opt.inRadius);
       obj.attr({
-        fill: opt.color.in
+        fill: opt.color.prize
       });
 
       // draw pie
       var len = opt.data.length;
       self[deg] = 360 / len;
       self[turntable] = svg.g();
-      if (len < 2 || len > 12) throw new Error('data.length must between 3 to 12');
+      if (len < 2 || len > 12) throw new Error('data.length must between 3 and 12');
       for (var i in opt.data) {
         var d = opt.data[i];
         var r = opt.inRadius;
@@ -9259,8 +9259,8 @@ var Wheel = function () {
 
         var pie = svg.path(pathD);
         pie.attr({
-          fill: d.color ? d.color : opt.color.in,
-          stroke: opt.color.inLine,
+          fill: d.color ? d.color : opt.color.prize,
+          stroke: opt.color.line,
           strokeWidth: 2
         });
 
@@ -9274,14 +9274,15 @@ var Wheel = function () {
         if (!opt.fontSize && !d.fontSize) {
           fontSize = fontSize * textSum / 2 > dLen * opt.textBottomPercentage ? dLen * opt.textBottomPercentage / textSum * 2 : fontSize;
         }
-        var textLen = fontSize * textSum / 2;
-        var text = svg.text(center[0] - textLen / 2, opt.pos[1] + opt.radius - r * opt.textBottomPercentage * Snap.cos(self[deg] / 2) - fontSize, d.text);
+        var text = svg.text(center[0], opt.pos[1] + opt.radius - r * opt.textBottomPercentage * Snap.cos(self[deg] / 2) - fontSize, d.text);
         text.attr({
-          fill: d.fontColor ? d.fontColor : opt.color.fontColor,
+          fill: d.fontColor ? d.fontColor : opt.color.prizeFont,
           fontSize: opt.fontSize ? opt.fontSize : fontSize
         });
+        var box = text.node.getBoundingClientRect();
+        text.transform(new Snap.Matrix().translate(-Math.floor(box.width / 2), 2));
 
-        var g = svg.g(pie, text).transform(m.rotate(self[deg] * Number(i), center[0], center[1]));
+        var g = svg.g(pie, text).transform(new Snap.Matrix().rotate(self[deg] * Number(i), center[0], center[1]));
         self[turntable].add(g);
       }
       self[turntable].node.style['transform-origin'] = 'center';
@@ -9310,8 +9311,8 @@ var Wheel = function () {
     value: function value() {
       var self = this;
       var opt = self.option;
-      if (!opt.el) throw new Error('el is undefined in Turntable');
-      if (!opt.data) throw new Error('data is undefined in Turntable');
+      if (!opt.el) throw new Error('el is undefined in Wheel');
+      if (!opt.data) throw new Error('data is undefined in Wheel');
 
       // 抽奖次数超过 limit
       if (opt.limit > 0 && self[count] >= opt.limit) {
@@ -9409,12 +9410,13 @@ function drawButton(opt, svg) {
     if (!opt.buttonFontSize) {
       fontSize = fontSize * textSum / 2 > maxLen ? maxLen / textSum * 2 : fontSize;
     }
-    var textLen = fontSize * textSum / 2;
-    text = svg.text(center[0] - textLen / 2, center[1], opt.buttonText);
+    text = svg.text(center[0], center[1], opt.buttonText);
     text.attr({
-      fill: opt.color.buttonFontColor,
+      fill: opt.color.buttonFont,
       fontSize: opt.buttonFontSize ? opt.buttonFontSize : fontSize
     });
+    var box = text.node.getBoundingClientRect();
+    text.transform(new Snap.Matrix().translate(-Math.floor(box.width / 2), 2));
   }
 
   var g = svg.g(button, text);
