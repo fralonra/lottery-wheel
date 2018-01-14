@@ -296,4 +296,9 @@ function getRotation (i, deg, minTurn) {
   return minTurn * 360 - i * deg;
 }
 
+function wheel (arg) {
+  return new Wheel(arg);
+}
+
 global.Wheel = Wheel; // 变成一个全局变量
+global.wheel = wheel;
