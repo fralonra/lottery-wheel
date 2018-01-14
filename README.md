@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/fralonra/turntable.js.svg?branch=master)](https://travis-ci.org/fralonra/turntable.js)
+[![Build Status](https://travis-ci.org/fralonra/lottery-wheel.svg?branch=master)](https://travis-ci.org/fralonra/lottery-wheel)
 
-# turntable.js
+# lottery-wheel
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/fralonra/turntable.js.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/fralonra/lottery-wheel.svg)](https://greenkeeper.io/)

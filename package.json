@@ -1,5 +1,5 @@
 {
-  "name": "turntable.js",
+  "name": "lottery-wheel",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fralonra/turntable.js.git"
+    "url": "git+https://github.com/fralonra/lottery-wheel.git"
   },
   "keywords": [
     "browser",
@@ -20,9 +20,9 @@
   "author": "zoron (https://github.com/fralonra/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fralonra/turntable.js/issues"
+    "url": "https://github.com/fralonra/lottery-wheel/issues"
   },
-  "homepage": "https://github.com/fralonra/turntable.js#readme",
+  "homepage": "https://github.com/fralonra/lottery-wheel#readme",
   "dependencies": {
     "animejs": "^2.2.0",
     "snapsvg": "^0.5.1"

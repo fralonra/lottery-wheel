@@ -39,7 +39,7 @@ const themes = {
   }
 };
 
-class Turntable {
+class Wheel {
   constructor (option = {}) {
     const self = this;
     self.option = {
@@ -296,4 +296,4 @@ function getRotation (i, deg, minTurn) {
   return minTurn * 360 - i * deg;
 }
 
-global.Turntable = Turntable; // 变成一个全局变量
+global.Wheel = Wheel; // 变成一个全局变量
