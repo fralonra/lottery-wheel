@@ -9240,7 +9240,6 @@ var Wheel = function () {
       for (var i in opt.data) {
         var d = opt.data[i];
         var r = opt.inRadius;
-        var m = new Snap.Matrix();
 
         if (typeof d === 'string') {
           d = {
