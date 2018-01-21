@@ -75,7 +75,7 @@ setTimeout(() => {
 ```
 
 ## Options
-| Property | Description | Type | Default
+| Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | el | The element where the wheel mounted. [Details](#el). | Object | - |
 | data | An array of prizes. [Details](#data). | Array | - |
@@ -83,6 +83,7 @@ setTimeout(() => {
 | radius | The radius of the wheel in `px`. | Number | 100 |
 | buttonText | The text on the button. | String | 'Draw' |
 | fontSize | The size of text for prizes. | Number | (auto generate) |
+| buttonWidth | The width of the button in `px`. | Number | 50 |
 | buttonFontSize | The size of text on the button. | Number | (auto generate) |
 | limit | The maxium times the wheel can be run. | Number | 0 (unlimited) |
 | duration | How long will the animation last in millseconds. | Number | 5000 |
@@ -90,9 +91,11 @@ setTimeout(() => {
 | draw | If true, the wheel will be rendered immediately the instance created. Otherwise, you should call [draw](#draw) to manually render it. | Boolean | true |
 | clockwise | If true, the rotation movement will be clockwise. Otherwise, it will be counter-clockwise. | Boolean | true |
 | theme | The color preset to be used. [Details](#themes). | String | 'default' |
+| image | Allow you to render the wheel using image resources. See [image](#image). | Object | - |
 | color | An object used to override the color in the current theme. See [themes](#themes) | Object | - |
 | onSuccess | The callback function called when a prize is drawn successfully. [Details](#onSuccess). | Function | - |
 | onFail | The callback function called when trying to draw prize while has already drawn `limit` times. [Details](#onFail). | Function | - |
+| onButtonHover | The function called when the mouse moves over the button. [Details](#onButtonHover) | Function | - |
 
 ### el
 The `el` property defines the element where to render the wheel. You should pass a
@@ -137,7 +140,7 @@ The callback function called when a prize is drawn successfully.
 
 | Parameter | Description | Type |
 | --- | --- | --- |
-| data | The drawn 'prize' object | Object |
+| data | The drawn '[prize](#prize-object)' object. | Object |
 ```javascript
 wheel({
   el: document.getElementById('wheel'),
@@ -163,8 +166,30 @@ wheel({
 ```
 In this case, if one has already drawn a prize, the next time he clicks the button the alert dialog will be shown.
 
+### onButtonHover
+Called when the mouse is moving over the button.
+
+| Parameter | Description | Type |
+| --- | --- | --- |
+| anime | Refer to animejs. See the [doc](#https://github.com/juliangarnier/anime) for usage.|  |
+| button | Refer to the Snap [Element](#http://snapsvg.io/docs/#Element) where the button lies. | Object |
+
+```javascript
+wheel({
+  el: document.getElementById('wheel'),
+  data: ['prize A', 'prize B', 'prize C', 'prize D'],
+  onButtonHover(anime, button) {
+    anime({
+      targets: button.node,
+      scale: 1.2,
+      duration: 500
+    });
+  }
+});
+```
+
 ## Prize Object
-| Property | Description | Type | Default
+| Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | text | The name for the prize | String | '' |
 | chance | The probability the prize to be drawn. The higher the value, the more chances the prize to be picked up. The probability is actually calculated by the formula `probability = 1 * chance / (sum of every prize's chance)` | Number | 1 |
@@ -252,3 +277,26 @@ wheel({
 });
 ```
 ![setting color](/doc/images/color.png)
+
+## Image
+The image property lets you render the wheel using the existing resources by setting an object. It will make an `image` SVG element and it supports jpeg, png and svg formats.
+
+| Property | Description | Type |
+| --- | --- | --- | --- |
+| turntable | The image for the turntable. | String |
+| button | The image for the button. It's width is controled by `buttonWidth` property and the aspect ratio will be preserved. Centered in the turntable by default. | String |
+| offset | The y-axis offsets for the button. If negative, the button moves up. | Number |
+
+Here's an example of how it looks like when using the images in [/doc/images](#https://github.com/fralonra/lottery-wheel/tree/master/doc/images) folder in this repo.
+```javascript
+wheel({
+  el: document.getElementById('wheel'),
+  data: ['Prize A', 'Prize B', 'Prize C', 'Prize D', 'Prize E', 'Prize F'],
+  image: {
+    turntable: 'turntable.png',
+    button: 'button.png',
+    offset: -10
+  },
+});
+```
+![image example](/doc/images/image.png)

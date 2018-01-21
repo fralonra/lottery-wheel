@@ -9108,6 +9108,8 @@ return Snap;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9123,6 +9125,12 @@ var weight = Symbol('weight'); // 权重
 var weightSum = Symbol('weight-sum'); // 权重总和
 var turntable = Symbol('turntable'); // 转盘元素
 var button = Symbol('button'); // 按钮元素
+var checkPrize = Symbol('check-prize'); // 检查数据函数
+var drawDefault = Symbol('draw-default'); // 默认绘制函数
+var drawResource = Symbol('draw-resource'); // 素材绘制函数
+var drawTurntable = Symbol('draw-turntable'); // 绘制转盘函数
+var drawButton = Symbol('draw-button'); // 绘制按钮函数
+var animeFunc = Symbol('anime-func'); // 动画函数
 var run = Symbol('run'); // 启动转盘函数
 var baseFontSize = 16;
 
@@ -9163,12 +9171,9 @@ var Wheel = function () {
     self.option = {
       pos: [0, 0], // 左上角坐标
       radius: 100, // 半径
-      // inRadius: , // 中圈半径
       buttonWidth: 50, // 按钮宽度
       buttonDeg: 80, // 顶针夹角
       buttonText: 'Draw', // 按钮文字
-      // fontSize: , // 文字大小
-      // buttonFontSize: , // 按钮文字大小,
       textBottomPercentage: 0.6, // 文字底部对于圆半径的百分比
       limit: 0, // 抽奖限定次数
       duration: 5000, // 转动持续时间
@@ -9183,22 +9188,70 @@ var Wheel = function () {
 
     if (!self.option.el) throw new Error('el is undefined in Wheel');
     if (!self.option.data) throw new Error('data is undefined in Wheel');
+
+    self.doc = self.option.el.ownerDocument;
     self[count] = 0;
     self[rotation] = 0;
     self[totalPies] = 1;
     self[weight] = [];
     self[weightSum] = 0;
 
+    self[checkPrize]();
+
     if (self.option.draw) self.draw();
   }
 
   _createClass(Wheel, [{
+    key: checkPrize,
+    value: function value() {
+      var self = this;
+      var opt = self.option;
+      for (var i in opt.data) {
+        var d = opt.data[i];
+        if (typeof d === 'string') {
+          opt.data[i] = {
+            text: d,
+            chance: 1
+          };
+        }
+        if (!opt.data[i].text) opt.data[i].text = i;
+        if (!opt.data[i].chance) opt.data[i].chance = 1;
+
+        self[weight].push(Number(opt.data[i].chance));
+        self[weightSum] += Number(opt.data[i].chance);
+      }
+    }
+  }, {
     key: 'draw',
     value: function draw() {
       var self = this;
       var opt = self.option;
       if (!opt.el) throw new Error('el is undefined in Wheel');
       if (!opt.data) throw new Error('data is undefined in Wheel');
+
+      var center = opt.pos.map(function (p) {
+        return p + opt.radius;
+      });
+      opt.center = center;
+
+      var svg = Snap(opt.el);
+      svg.node.style.width = String(opt.radius * 2) + 'px';
+      svg.node.style.height = String(opt.radius * 2) + 'px';
+
+      self[deg] = 360 / opt.data.length;
+
+      // image resource provided?
+      if (opt.image) self[drawResource](svg);else self[drawDefault](svg);
+
+      self[animeFunc]();
+    }
+  }, {
+    key: drawDefault,
+    value: function value(svg) {
+      var self = this;
+      if (self[turntable] && self[button]) return;
+
+      var opt = self.option;
 
       // theme
       var theme = themes[opt.theme] ? opt.theme : 'default';
@@ -9214,44 +9267,61 @@ var Wheel = function () {
         opt.inRadius = opt.radius;
       }
 
-      var svg = Snap(opt.el);
-      opt.el.style.width = String(opt.radius * 2) + 'px';
-      opt.el.style.height = String(opt.radius * 2) + 'px';
+      // draw turntable
+      self[drawTurntable](svg);
+
+      // draw button
+      self[drawButton](svg);
+    }
+  }, {
+    key: drawResource,
+    value: function value(svg) {
+      var self = this;
+      var opt = self.option;
+
+      var res = opt.image;
+      if ((typeof res === 'undefined' ? 'undefined' : _typeof(res)) === 'object' && Object.keys(res).length > 0) {
+        if (res.turntable && typeof res.turntable === 'string') {
+          self[turntable] = svg.image(res.turntable, opt.pos[0], opt.pos[1], opt.radius * 2, opt.radius * 2);
+        }
+        if (res.button && typeof res.button === 'string') {
+          var size = getImageSize(res.button, svg, self.doc);
+          var buttonHeight = size[1] * opt.buttonWidth / size[0];
+
+          self[button] = svg.image(res.button, opt.center[0] - opt.buttonWidth / 2, opt.center[1] + res.offset - Math.round(buttonHeight / 2), opt.buttonWidth, buttonHeight);
+        }
+      }
+
+      return self[drawDefault](svg);
+    }
+  }, {
+    key: drawTurntable,
+    value: function value(svg) {
+      var self = this;
+      if (self[turntable]) return;
+
+      var opt = self.option;
 
       // draw circle
-      var center = opt.pos.map(function (p) {
-        return p + opt.radius;
-      });
-      opt.center = center;
-      var obj = svg.circle(center[0], center[1], opt.radius);
+      var obj = svg.circle(opt.center[0], opt.center[1], opt.radius);
       obj.attr({
         fill: opt.color.border
       });
-      obj = svg.circle(center[0], center[1], opt.inRadius);
+
+      obj = svg.circle(opt.center[0], opt.center[1], opt.inRadius);
       obj.attr({
         fill: opt.color.prize
       });
 
       // draw pie
       var len = opt.data.length;
-      self[deg] = 360 / len;
       self[turntable] = svg.g();
       if (len < 2 || len > 12) throw new Error('data.length must between 3 and 12');
       for (var i in opt.data) {
         var d = opt.data[i];
         var r = opt.inRadius;
 
-        if (typeof d === 'string') {
-          d = {
-            text: d,
-            chance: 1
-          };
-        }
-        if (!d.text) d.text = '';
-        self[weight].push(Number(d.chance));
-        self[weightSum] += Number(d.chance);
-
-        var _describeArc = describeArc(center[0], center[1], r, -self[deg] / 2, self[deg] / 2),
+        var _describeArc = describeArc(opt.center[0], opt.center[1], r, -self[deg] / 2, self[deg] / 2),
             _describeArc2 = _slicedToArray(_describeArc, 2),
             pathD = _describeArc2[0],
             dLen = _describeArc2[1];
@@ -9273,22 +9343,85 @@ var Wheel = function () {
         if (!opt.fontSize && !d.fontSize) {
           fontSize = fontSize * textSum / 2 > dLen * opt.textBottomPercentage ? dLen * opt.textBottomPercentage / textSum * 2 : fontSize;
         }
-        var text = svg.text(center[0], opt.pos[1] + opt.radius - r * opt.textBottomPercentage * Snap.cos(self[deg] / 2) - fontSize, d.text);
+        var text = svg.text(opt.center[0], opt.pos[1] + opt.radius - r * opt.textBottomPercentage * Snap.cos(self[deg] / 2) - fontSize, d.text);
         text.attr({
           fill: d.fontColor ? d.fontColor : opt.color.prizeFont,
           fontSize: opt.fontSize ? opt.fontSize : fontSize
         });
         var box = text.node.getBoundingClientRect();
-        text.transform(new Snap.Matrix().translate(-Math.floor(box.width / 2), 2));
+        text.transform(new Snap.Matrix().translate(-Math.round(box.width / 2), 2));
 
-        var g = svg.g(pie, text).transform(new Snap.Matrix().rotate(self[deg] * Number(i), center[0], center[1]));
+        var g = svg.g(pie, text).transform(new Snap.Matrix().rotate(self[deg] * Number(i), opt.center[0], opt.center[1]));
         self[turntable].add(g);
       }
+    }
+  }, {
+    key: drawButton,
+    value: function value(svg) {
+      var self = this;
+      if (self[button]) return;
+
+      var opt = self.option;
+
+      if (opt.button && typeof opt.button === 'string') {
+        return;
+      }
+
+      var r = opt.buttonWidth / 2;
+      var center = opt.center;
+      var deg = (180 - opt.buttonDeg) / 2;
+
+      var _describeArc3 = describeArc(center[0], center[1], r, deg - 360, 360 - deg),
+          _describeArc4 = _slicedToArray(_describeArc3, 4),
+          pathArc = _describeArc4[0],
+          end = _describeArc4[3];
+
+      var top = [center[0], center[1] - r / Snap.cos(deg)];
+      var pathD = pathArc + 'L' + top[0] + ',' + top[1] + 'L' + end.x + ',' + end.y + 'L' + center[0] + ',' + center[1];
+      var b = svg.path(pathD);
+      b.attr({
+        fill: opt.color.button,
+        filter: svg.filter(Snap.filter.shadow(0, 3, 3, 'black', 0.5))
+      });
+
+      var text = null;
+      if (opt.buttonText !== '') {
+        var maxLen = r * 2 * 0.8;
+        var fontSize = opt.buttonFontSize ? opt.buttonFontSize : baseFontSize;
+        var textSum = 0;
+        for (var i = 0; i < opt.buttonText.length; ++i) {
+          if (opt.buttonText[i].match(/\w/)) {
+            textSum += 1;
+          } else textSum += 2;
+        }
+        if (!opt.buttonFontSize) {
+          fontSize = fontSize * textSum / 2 > maxLen ? maxLen / textSum * 2 : fontSize;
+        }
+        text = svg.text(center[0], center[1], opt.buttonText);
+        text.attr({
+          fill: opt.color.buttonFont,
+          fontSize: opt.buttonFontSize ? opt.buttonFontSize : fontSize
+        });
+        var box = text.node.getBoundingClientRect();
+        text.transform(new Snap.Matrix().translate(-Math.round(box.width / 2), 2));
+      }
+
+      self[button] = svg.g(b, text);
+    }
+  }, {
+    key: animeFunc,
+    value: function value() {
+      var self = this;
+      var opt = self.option;
+
       self[turntable].node.style['transform-origin'] = 'center';
 
-      // draw button
-      self[button] = drawButton(opt, svg);
+      self[button].node.style.cursor = 'pointer';
+      self[button].node.style['transform-origin'] = 'center';
       self[button].hover(function () {
+        if (opt.onButtonHover && typeof opt.onButtonHover === 'function') {
+          return opt.onButtonHover(anime, self[button]);
+        }
         anime({
           targets: self[button].node,
           scale: 1.2,
@@ -9339,7 +9472,9 @@ var Wheel = function () {
         complete: function complete() {
           ++self[count];
           if (opt.onSuccess && typeof opt.onSuccess === 'function') {
-            opt.onSuccess(opt.data[(self[totalPies] - 1) % opt.data.length]);
+            var len = opt.data.length;
+            var d = opt.clockwise ? opt.data[(self[totalPies] - 1) % len] : opt.data[len - (self[totalPies] - 1) % len];
+            opt.onSuccess(d);
           }
         }
       });
@@ -9349,10 +9484,13 @@ var Wheel = function () {
   return Wheel;
 }();
 
+// 获取内圈半径
+
+
 function getInRadius(radius) {
   if (radius < 50) return radius;
   if (radius < 100) return radius - 10;
-  return Math.floor(radius / 10) * 9;
+  return Math.round(radius / 10) * 9;
 }
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -9374,58 +9512,21 @@ function describeArc(x, y, radius, startAngle, endAngle) {
   return [d, l, start, end];
 }
 
-function drawButton(opt, svg) {
-  if (opt.button && typeof opt.button === 'string') {
-    return;
-  }
-
-  var r = opt.buttonWidth / 2;
-  var center = opt.center;
-  var deg = (180 - opt.buttonDeg) / 2;
-
-  var _describeArc3 = describeArc(center[0], center[1], r, deg - 360, 360 - deg),
-      _describeArc4 = _slicedToArray(_describeArc3, 4),
-      pathArc = _describeArc4[0],
-      end = _describeArc4[3];
-
-  var top = [center[0], center[1] - r / Snap.cos(deg)];
-  var pathD = pathArc + 'L' + top[0] + ',' + top[1] + 'L' + end.x + ',' + end.y + 'L' + center[0] + ',' + center[1];
-  var button = svg.path(pathD);
-  button.attr({
-    fill: opt.color.button,
-    filter: svg.filter(Snap.filter.shadow(0, 3, 3, 'black', 0.5))
-  });
-
-  var text = null;
-  if (opt.buttonText !== '') {
-    var maxLen = r * 2 * 0.8;
-    var fontSize = opt.buttonFontSize ? opt.buttonFontSize : baseFontSize;
-    var textSum = 0;
-    for (var i = 0; i < opt.buttonText.length; ++i) {
-      if (opt.buttonText[i].match(/\w/)) {
-        textSum += 1;
-      } else textSum += 2;
-    }
-    if (!opt.buttonFontSize) {
-      fontSize = fontSize * textSum / 2 > maxLen ? maxLen / textSum * 2 : fontSize;
-    }
-    text = svg.text(center[0], center[1], opt.buttonText);
-    text.attr({
-      fill: opt.color.buttonFont,
-      fontSize: opt.buttonFontSize ? opt.buttonFontSize : fontSize
-    });
-    var box = text.node.getBoundingClientRect();
-    text.transform(new Snap.Matrix().translate(-Math.floor(box.width / 2), 2));
-  }
-
-  var g = svg.g(button, text);
-  g.node.style.cursor = 'pointer';
-  g.node.style['transform-origin'] = 'center';
-  return g;
-}
-
+// 获取旋转角度
 function getRotation(i, deg, minTurn) {
   return minTurn * 360 - i * deg;
+}
+
+// 获取图片尺寸
+function getImageSize(src, svg, doc) {
+  var img = doc.createElement('img');
+  var body = doc.body;
+  body.appendChild(img);
+  img.src = src;
+
+  var size = [img.offsetWidth, img.offsetHeight];
+  doc.body.removeChild(img);
+  return size;
 }
 
 function wheel(arg) {
