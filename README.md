@@ -282,7 +282,7 @@ wheel({
 The image property lets you render the wheel using the existing resources by setting an object. It will make an `image` SVG element and it supports jpeg, png and svg formats.
 
 | Property | Description | Type |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | turntable | The image for the turntable. | String |
 | button | The image for the button. It's width is controled by `buttonWidth` property and the aspect ratio will be preserved. Centered in the turntable by default. | String |
 | offset | The y-axis offsets for the button. If negative, the button moves up. | Number |
