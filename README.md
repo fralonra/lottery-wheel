@@ -93,9 +93,9 @@ setTimeout(() => {
 | theme | The color preset to be used. [Details](#themes). | String | 'default' |
 | image | Allow you to render the wheel using image resources. See [image](#image). | Object | - |
 | color | An object used to override the color in the current theme. See [themes](#themes) | Object | - |
-| onSuccess | The callback function called when a prize is drawn successfully. [Details](#onSuccess). | Function | - |
-| onFail | The callback function called when trying to draw prize while has already drawn `limit` times. [Details](#onFail). | Function | - |
-| onButtonHover | The function called when the mouse moves over the button. [Details](#onButtonHover) | Function | - |
+| onSuccess | The callback function called when a prize is drawn successfully. [Details](#onsuccess). | Function | - |
+| onFail | The callback function called when trying to draw prize while has already drawn `limit` times. [Details](#onfail). | Function | - |
+| onButtonHover | The function called when the mouse moves over the button. [Details](#onbuttonhover) | Function | - |
 
 ### el
 The `el` property defines the element where to render the wheel. You should pass a
@@ -171,8 +171,8 @@ Called when the mouse is moving over the button.
 
 | Parameter | Description | Type |
 | --- | --- | --- |
-| anime | Refer to animejs. See the [doc](#https://github.com/juliangarnier/anime) for usage.|  |
-| button | Refer to the Snap [Element](#http://snapsvg.io/docs/#Element) where the button lies. | Object |
+| anime | Refer to animejs. See the [doc](https://github.com/juliangarnier/anime) for usage.|  |
+| button | Refer to the Snap [Element](http://snapsvg.io/docs/#Element) where the button lies. | Object |
 
 ```javascript
 wheel({
