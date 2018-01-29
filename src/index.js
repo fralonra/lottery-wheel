@@ -1,10 +1,10 @@
 const anime = require('animejs');
 const Snap = require('snapsvg');
+const axios = require('axios');
 
 const count = Symbol('count'); // 已抽奖次数
 const deg = Symbol('deg'); // pie 夹角
 const rotation = Symbol('rotation'); // 当前转动角度
-const totalPies = Symbol('totalPies'); // 当前转动 pie 总数
 const weight = Symbol('weight'); // 权重
 const weightSum = Symbol('weight-sum'); // 权重总和
 const turntable = Symbol('turntable'); // 转盘元素
@@ -16,6 +16,7 @@ const drawTurntable = Symbol('draw-turntable'); // 绘制转盘函数
 const drawButton = Symbol('draw-button'); // 绘制按钮函数
 const animeFunc = Symbol('anime-func'); // 动画函数
 const run = Symbol('run'); // 启动转盘函数
+const running = Symbol('running'); // 转盘正在转动
 const baseFontSize = 16;
 
 const themes = {
@@ -60,7 +61,8 @@ class Wheel {
       turn: 4, // 最小转动圈数
       clockwise: true, // 顺时针旋转
       draw: true, // 立刻绘制
-      theme: 'default' // 主题
+      theme: 'default', // 主题
+      mode: 'default' // 模式
     };
     Object.keys(option).forEach(function (k) {
       self.option[k] = option[k];
@@ -72,9 +74,9 @@ class Wheel {
     self.doc = self.option.el.ownerDocument;
     self[count] = 0;
     self[rotation] = 0;
-    self[totalPies] = 1;
     self[weight] = [];
     self[weightSum] = 0;
+    self[running] = false;
 
     self[checkPrize]();
 
@@ -159,6 +161,7 @@ class Wheel {
         self[turntable] = svg.image(res.turntable, opt.pos[0], opt.pos[1], opt.radius * 2, opt.radius * 2);
       }
       if (res.button && typeof res.button === 'string') {
+        if (!res.offset || typeof res.offset !== 'number') res.offset = 0;
         const size = getImageSize(res.button, svg, self.doc);
         const buttonHeight = size[1] * opt.buttonWidth / size[0];
 
@@ -304,6 +307,7 @@ class Wheel {
 
   [run] () {
     const self = this;
+    if (self[running]) return;
     const opt = self.option;
     if (!opt.el) throw new Error('el is undefined in Wheel');
     if (!opt.data) throw new Error('data is undefined in Wheel');
@@ -313,32 +317,52 @@ class Wheel {
       return (opt.onFail && typeof opt.onFail === 'function') ? opt.onFail() : null;
     }
 
-    const random = Math.random() * self[weightSum] + 1;
-    let w = 0, s = 0;
-    for (let i in self[weight]) {
-      w += self[weight][i];
-      if (w > random) {
-        s = Number(i);
-        self[totalPies] += s;
-        break;
-      }
-    }
-
     // rotate animation
-    self[rotation] += getRotation(s, self[deg], opt.turn);
-    anime({
-      targets: self[turntable].node,
-      rotate: opt.clockwise ? String(self[rotation]) + 'deg' : '-' + String(self[rotation]) + 'deg',
-      duration: opt.duration,
-      complete () {
-        ++self[count];
-        if (opt.onSuccess && typeof opt.onSuccess === 'function') {
-          const len = opt.data.length;
-          const d = opt.clockwise ? opt.data[(self[totalPies] - 1) % len] : opt.data[len - (self[totalPies] - 1) % len];
-          opt.onSuccess(d);
+    const runAnime = (pie) => {
+      if (self[rotation] > 0) {
+        const revision = 360 - (self[rotation] % 360);
+        self[rotation] += revision;
+      }
+      self[rotation] += getRotation(pie, self[deg], opt.turn);
+      anime({
+        targets: self[turntable].node,
+        rotate: opt.clockwise ? String(self[rotation]) + 'deg' : '-' + String(self[rotation]) + 'deg',
+        duration: opt.duration,
+        begin () {
+          self[running] = true;
+        },
+        complete () {
+          self[running] = false;
+          ++self[count];
+          if (opt.onSuccess && typeof opt.onSuccess === 'function') {
+            const d = opt.clockwise ? opt.data[(opt.data.length - pie) % opt.data.length] : opt.data[pie];
+            opt.onSuccess(d);
+          }
+        }
+      });
+    };
+
+    const random = Math.random() * self[weightSum];
+    let randomWeight = 0, pie = 0;
+    if (opt.mode === 'online' && opt.url) {
+      axios.get(opt.url)
+        .then((response) => {
+          pie = response.data;
+          runAnime(pie);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      for (let i in self[weight]) {
+        randomWeight += self[weight][i];
+        if (randomWeight > random) {
+          pie = Number(i);
+          runAnime(pie);
+          break;
         }
       }
-    });
+    }
   }
 }
 
@@ -375,7 +399,7 @@ function describeArc (x, y, radius, startAngle, endAngle) {
 
 // 获取旋转角度
 function getRotation (i, deg, minTurn) {
-  return minTurn * 360 - i * deg;
+  return minTurn * 360 + i * deg;
 }
 
 // 获取图片尺寸

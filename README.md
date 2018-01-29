@@ -91,6 +91,8 @@ setTimeout(() => {
 | draw | If true, the wheel will be rendered immediately the instance created. Otherwise, you should call [draw](#draw) to manually render it. | Boolean | true |
 | clockwise | If true, the rotation movement will be clockwise. Otherwise, it will be counter-clockwise. | Boolean | true |
 | theme | The color preset to be used. [Details](#themes). | String | 'default' |
+| mode | How the wheel determine the result. [Details](#mode). | String | 'default' |
+| url | Works only when the `mode` is set to `online`. [Details](#mode). | String | - |
 | image | Allow you to render the wheel using image resources. See [image](#image). | Object | - |
 | color | An object used to override the color in the current theme. See [themes](#themes) | Object | - |
 | onSuccess | The callback function called when a prize is drawn successfully. [Details](#onsuccess). | Function | - |
@@ -278,8 +280,22 @@ wheel({
 ```
 ![setting color](/doc/images/color.png)
 
+## Mode
+The `mode` property currently supports following values:
+1. default: The result will be determined by the `chance` property defined in the prize object.
+2. online: The result will be determined by the response returned from the url which defined in `url` property. For example:
+```javascript
+wheel({
+    el: document.getElementById('wheel'),
+    data: ['Beijing', 'London', 'New York', 'Tokyo'],
+    mode: 'online',
+    url: '/your/upstream/url' // if the response is 1, the result will be 'Lodon'.
+});
+```
+By this way, it's accessible to make the wheel responsive to the backend server.
+
 ## Image
-The image property lets you render the wheel using the existing resources by setting an object. It will make an `image` SVG element and it supports jpeg, png and svg formats.
+The `image` property lets you render the wheel using the existing resources by setting an object. It will make an `image` SVG element and it supports jpeg, png and svg formats.
 
 | Property | Description | Type |
 | --- | --- | --- |
@@ -287,7 +303,7 @@ The image property lets you render the wheel using the existing resources by set
 | button | The image for the button. It's width is controled by `buttonWidth` property and the aspect ratio will be preserved. Centered in the turntable by default. | String |
 | offset | The y-axis offsets for the button. If negative, the button moves up. | Number |
 
-Here's an example of how it looks like when using the images in [/doc/images](#https://github.com/fralonra/lottery-wheel/tree/master/doc/images) folder in this repo.
+Here's an example of how it looks like when using the images in [/doc/images](https://github.com/fralonra/lottery-wheel/tree/master/doc/images) folder in this repo.
 ```javascript
 wheel({
   el: document.getElementById('wheel'),
