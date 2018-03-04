@@ -75,6 +75,7 @@ setTimeout(() => {
 ```
 
 ## Options
+
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | el | The element where the wheel mounted. [Details](#el). | Object | - |
@@ -143,6 +144,7 @@ The callback function called when a prize is drawn successfully.
 | Parameter | Description | Type |
 | --- | --- | --- |
 | data | The drawn '[prize](#prize-object)' object. | Object |
+
 ```javascript
 wheel({
   el: document.getElementById('wheel'),
@@ -191,6 +193,7 @@ wheel({
 ```
 
 ## Prize Object
+
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | text | The name for the prize | String | '' |
