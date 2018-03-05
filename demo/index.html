@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Wheel</title>
+    <link href="index.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/arta.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../dist/lottery-wheel.min.js"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Lottery Wheel</h1>
+        <h3>A library helps you performing a wheel for lottery game.</h3>
+        <a href="https://github.com/fralonra/lottery-wheel">REPO & DOC</a>
+      </header>
+
+      <a href="https://github.com/fralonra/lottery-wheel"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+      <div class="main">
+        <section>
+          <h2 class="section-title">Usage</h2>
+          <div class="section-content">
+            Install the package via npm:
+            <pre><code>npm install lottery-wheel</code></pre>
+            Or download the latest <a href="https://github.com/fralonra/lottery-wheel/releases">Release</a>.
+          </div>
+        </section>
+        <section>
+          <h2 class="section-title">API</h2>
+          <div class="section-content">
+            Please visit <a href="https://github.com/fralonra/lottery-wheel">repo</a>
+            to see guides.
+          </div>
+        </section>
+        <section>
+          <h2 class="section-title">Basic Example</h2>
+          <div class="section-content">
+            Show the drawn prize:
+          </div>
+          <div class="section-demo">
+            <div class="code">
+              <pre><code class="javascript">
+  wheel({
+    el: document.getElementById('wheel'),
+    data: ['prize A', 'prize B', 'prize C', 'prize D'],
+    onSuccess(data) {
+      alert(data.text);
+    }
+  });
+              </code></pre>
+            </div>
+            <div class="showcase">
+              <svg id="wheel1"></svg>
+            </div>
+            <script type="text/javascript">
+            wheel({
+              el: document.getElementById('wheel1'),
+              data: ['prize A', 'prize B', 'prize C', 'prize D'],
+              onSuccess(data) {
+                alert(data.text);
+              }
+            });
+            </script>
+          </div>
+        </section>
+        <section>
+          <div class="section-content">
+            Prizes with different probability to be drawn:
+          </div>
+          <div class="section-demo">
+            <div class="code">
+              <pre><code class="javascript">
+  wheel({
+    el: document.getElementById('wheel2'),
+    data: [{
+      text: '50%',
+      chance: 5
+    }, {
+      text: '20%',
+      chance: 2
+    }, '10%', '10%', '10%']
+  });
+              </code></pre>
+            </div>
+            <div class="showcase">
+              <svg id="wheel2"></svg>
+            </div>
+            <script type="text/javascript">
+            wheel({
+              el: document.getElementById('wheel2'),
+              data: [{
+                text: '50%',
+                chance: 5
+              }, {
+                text: '20%',
+                chance: 2
+              }, '10%', '10%', '10%']
+            });
+            </script>
+          </div>
+        </section>
+        <section>
+          <div class="section-content">
+            Can only draw one time:
+          </div>
+          <div class="section-demo">
+            <div class="code">
+              <pre><code class="javascript">
+  wheel({
+    el: document.getElementById('wheel3'),
+    data: ['prize A', 'prize B', 'prize C', 'prize D'],
+    limit: 1,
+    onFail() {
+      alert('You have no more chance to draw');
+    }
+  });
+              </code></pre>
+            </div>
+            <div class="showcase">
+              <svg id="wheel3"></svg>
+            </div>
+            <script type="text/javascript">
+            wheel({
+              el: document.getElementById('wheel3'),
+              data: ['prize A', 'prize B', 'prize C', 'prize D'],
+              limit: 1,
+              onFail() {
+                alert('You have no more chance to draw');
+              }
+            });
+            </script>
+          </div>
+        </section>
+        <section>
+          <div class="section-content">
+            Custom styles:
+          </div>
+          <div class="section-demo">
+            <div class="code">
+              <pre><code class="javascript">
+  wheel({
+    el: document.getElementById('wheel4'),
+    data: [{
+      text: 'Beijing',
+      color: 'silver',
+      fontSize: 24
+    }, {
+      text: 'London',
+      fontColor: '#008000'
+    }, 'New York', 'Tokyo'],
+    theme: 'light',
+    radius: 150,
+    buttonWidth: 75,
+    color: {
+      button: '#fef5e7',
+      buttonFont: '#34495e'
+    }
+  });
+              </code></pre>
+            </div>
+            <div class="showcase">
+              <svg id="wheel4"></svg>
+            </div>
+            <script type="text/javascript">
+            wheel({
+              el: document.getElementById('wheel4'),
+              data: [{
+                text: 'Beijing',
+                color: 'silver',
+                fontSize: 24
+              }, {
+                text: 'London',
+                fontColor: '#008000'
+              }, 'New York', 'Tokyo'],
+              theme: 'light',
+              radius: 150,
+              buttonWidth: 75,
+              color: {
+                button: '#fef5e7',
+                buttonFont: '#34495e'
+              }
+            });
+            </script>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

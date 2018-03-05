@@ -410,8 +410,8 @@ function getImageSize (src, svg, doc) {
   img.src = src;
 
   const size = [
-    img.offsetWidth,
-    img.offsetHeight
+    img.width || img.naturalWidth || img.getBoundingClientRect().width || 50,
+    img.height || img.naturalHeight || img.getBoundingClientRect().height || 50
   ];
   doc.body.removeChild(img);
   return size;

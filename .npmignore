@@ -1,4 +1,6 @@
 .eslintrc.json
 .travis.yml
+_config.yml
 gulpfile.js
+demo
 doc

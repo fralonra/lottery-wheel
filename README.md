@@ -5,6 +5,8 @@
 
 A library helps you performing a wheel for lottery game. Using [Snap.svg](https://github.com/adobe-webplatform/Snap.svg) and [anime.js](https://github.com/juliangarnier/anime/).
 
+[demo](https://fralonra.github.io/lottery-wheel/demo)
+
 # Usage
 
 ```bash
@@ -14,7 +16,7 @@ Or download the latest [release](https://github.com/fralonra/lottery-wheel/relea
 
 Then link `lottery-wheel.min.js` or `lottery-wheel.js` in your HTML.
 ```html
-<script src="lottery-wheel.min.js"></script>
+<script src="/path/to/lottery-wheel.min.js"></script>
 ```
 
 Supposed you have an element whose id is 'wheel' in your html file.
