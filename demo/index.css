@@ -7,7 +7,9 @@
 html {
 	font-size: 100%;
 	line-height: 1.5;
-	@media (max-width: 960px) {
+}
+@media (max-width: 960px) {
+	html {
 		font-size: 80%;
 	}
 }
@@ -57,6 +59,7 @@ section {
 .code {
   flex: 0 0 60%;
   width: 60%;
+	overflow-x: auto;
 }
 .code code {
   width: 100%;
