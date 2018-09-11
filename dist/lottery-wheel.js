@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 /*
  2017 Julian Garnier
@@ -10735,37 +10735,61 @@ return Snap;
 }));
 },{"eve":27}],31:[function(require,module,exports){
 (function (global){
-'use strict';
+"use strict";
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var anime = require('animejs');
+
 var Snap = require('snapsvg');
+
 var axios = require('axios');
 
 var count = Symbol('count'); // 已抽奖次数
-var deg = Symbol('deg'); // pie 夹角
-var rotation = Symbol('rotation'); // 当前转动角度
-var weight = Symbol('weight'); // 权重
-var weightSum = Symbol('weight-sum'); // 权重总和
-var turntable = Symbol('turntable'); // 转盘元素
-var button = Symbol('button'); // 按钮元素
-var checkPrize = Symbol('check-prize'); // 检查数据函数
-var drawDefault = Symbol('draw-default'); // 默认绘制函数
-var drawResource = Symbol('draw-resource'); // 素材绘制函数
-var drawTurntable = Symbol('draw-turntable'); // 绘制转盘函数
-var drawButton = Symbol('draw-button'); // 绘制按钮函数
-var animeFunc = Symbol('anime-func'); // 动画函数
-var run = Symbol('run'); // 启动转盘函数
-var running = Symbol('running'); // 转盘正在转动
-var baseFontSize = 16;
 
+var deg = Symbol('deg'); // pie 夹角
+
+var rotation = Symbol('rotation'); // 当前转动角度
+
+var weight = Symbol('weight'); // 权重
+
+var weightSum = Symbol('weight-sum'); // 权重总和
+
+var turntable = Symbol('turntable'); // 转盘元素
+
+var button = Symbol('button'); // 按钮元素
+
+var checkPrize = Symbol('check-prize'); // 检查数据函数
+
+var drawDefault = Symbol('draw-default'); // 默认绘制函数
+
+var drawResource = Symbol('draw-resource'); // 素材绘制函数
+
+var drawTurntable = Symbol('draw-turntable'); // 绘制转盘函数
+
+var drawButton = Symbol('draw-button'); // 绘制按钮函数
+
+var animeFunc = Symbol('anime-func'); // 动画函数
+
+var run = Symbol('run'); // 启动转盘函数
+
+var running = Symbol('running'); // 转盘正在转动
+
+var baseFontSize = 16;
 var themes = {
   default: {
     border: 'red',
@@ -10793,7 +10817,9 @@ var themes = {
   }
 };
 
-var Wheel = function () {
+var Wheel =
+/*#__PURE__*/
+function () {
   function Wheel() {
     var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -10801,36 +10827,45 @@ var Wheel = function () {
 
     var self = this;
     self.option = {
-      pos: [0, 0], // 左上角坐标
-      radius: 100, // 半径
-      buttonWidth: 50, // 按钮宽度
-      buttonDeg: 80, // 顶针夹角
-      buttonText: 'Draw', // 按钮文字
-      textBottomPercentage: 0.6, // 文字底部对于圆半径的百分比
-      limit: 0, // 抽奖限定次数
-      duration: 5000, // 转动持续时间
-      turn: 4, // 最小转动圈数
-      clockwise: true, // 顺时针旋转
-      draw: true, // 立刻绘制
-      theme: 'default', // 主题
+      pos: [0, 0],
+      // 左上角坐标
+      radius: 100,
+      // 半径
+      buttonWidth: 50,
+      // 按钮宽度
+      buttonDeg: 80,
+      // 顶针夹角
+      buttonText: 'Draw',
+      // 按钮文字
+      textBottomPercentage: 0.6,
+      // 文字底部对于圆半径的百分比
+      limit: 0,
+      // 抽奖限定次数
+      duration: 5000,
+      // 转动持续时间
+      turn: 4,
+      // 最小转动圈数
+      clockwise: true,
+      // 顺时针旋转
+      draw: true,
+      // 立刻绘制
+      theme: 'default',
+      // 主题
       mode: 'default' // 模式
+
     };
     Object.keys(option).forEach(function (k) {
       self.option[k] = option[k];
     });
-
     if (!self.option.el) throw new Error('el is undefined in Wheel');
     if (!self.option.data) throw new Error('data is undefined in Wheel');
-
     self.doc = self.option.el.ownerDocument;
     self[count] = 0;
     self[rotation] = 0;
     self[weight] = [];
     self[weightSum] = 0;
     self[running] = false;
-
     self[checkPrize]();
-
     if (self.option.draw) self.draw();
   }
 
@@ -10839,43 +10874,40 @@ var Wheel = function () {
     value: function value() {
       var self = this;
       var opt = self.option;
+
       for (var i in opt.data) {
         var d = opt.data[i];
+
         if (typeof d === 'string') {
           opt.data[i] = {
             text: d,
             chance: 1
           };
         }
+
         if (!opt.data[i].text) opt.data[i].text = i;
         if (!opt.data[i].chance) opt.data[i].chance = 1;
-
         self[weight].push(Number(opt.data[i].chance));
         self[weightSum] += Number(opt.data[i].chance);
       }
     }
   }, {
-    key: 'draw',
+    key: "draw",
     value: function draw() {
       var self = this;
       var opt = self.option;
       if (!opt.el) throw new Error('el is undefined in Wheel');
       if (!opt.data) throw new Error('data is undefined in Wheel');
-
       var center = opt.pos.map(function (p) {
         return p + opt.radius;
       });
       opt.center = center;
-
       var svg = Snap(opt.el);
       svg.node.style.width = String(opt.radius * 2) + 'px';
       svg.node.style.height = String(opt.radius * 2) + 'px';
+      self[deg] = 360 / opt.data.length; // image resource provided?
 
-      self[deg] = 360 / opt.data.length;
-
-      // image resource provided?
       if (opt.image) self[drawResource](svg);else self[drawDefault](svg);
-
       self[animeFunc]();
     }
   }, {
@@ -10883,27 +10915,23 @@ var Wheel = function () {
     value: function value(svg) {
       var self = this;
       if (self[turntable] && self[button]) return;
+      var opt = self.option; // theme
 
-      var opt = self.option;
-
-      // theme
       var theme = themes[opt.theme] ? opt.theme : 'default';
       if (!opt.color) opt.color = {};
       Object.keys(themes[theme]).forEach(function (k) {
         if (!opt.color[k]) opt.color[k] = themes[theme][k];
-      });
+      }); // params caculate
 
-      // params caculate
       if (!opt.inRadius) {
         opt.inRadius = getInRadius(opt.radius);
       } else if (opt.inRadius > opt.radius) {
         opt.inRadius = opt.radius;
-      }
+      } // draw turntable
 
-      // draw turntable
-      self[drawTurntable](svg);
 
-      // draw button
+      self[drawTurntable](svg); // draw button
+
       self[drawButton](svg);
     }
   }, {
@@ -10911,17 +10939,17 @@ var Wheel = function () {
     value: function value(svg) {
       var self = this;
       var opt = self.option;
-
       var res = opt.image;
-      if ((typeof res === 'undefined' ? 'undefined' : _typeof(res)) === 'object' && Object.keys(res).length > 0) {
+
+      if (_typeof(res) === 'object' && Object.keys(res).length > 0) {
         if (res.turntable && typeof res.turntable === 'string') {
           self[turntable] = svg.image(res.turntable, opt.pos[0], opt.pos[1], opt.radius * 2, opt.radius * 2);
         }
+
         if (res.button && typeof res.button === 'string') {
           if (!res.offset || typeof res.offset !== 'number') res.offset = 0;
           var size = getImageSize(res.button, svg, self.doc);
           var buttonHeight = size[1] * opt.buttonWidth / size[0];
-
           self[button] = svg.image(res.button, opt.center[0] - opt.buttonWidth / 2, opt.center[1] + res.offset - Math.round(buttonHeight / 2), opt.buttonWidth, buttonHeight);
         }
       }
@@ -10933,24 +10961,21 @@ var Wheel = function () {
     value: function value(svg) {
       var self = this;
       if (self[turntable]) return;
+      var opt = self.option; // draw circle
 
-      var opt = self.option;
-
-      // draw circle
       var obj = svg.circle(opt.center[0], opt.center[1], opt.radius);
       obj.attr({
         fill: opt.color.border
       });
-
       obj = svg.circle(opt.center[0], opt.center[1], opt.inRadius);
       obj.attr({
         fill: opt.color.prize
-      });
+      }); // draw pie
 
-      // draw pie
       var len = opt.data.length;
       self[turntable] = svg.g();
       if (len < 2 || len > 12) throw new Error('data.length must between 3 and 12');
+
       for (var i in opt.data) {
         var d = opt.data[i];
         var r = opt.inRadius;
@@ -10966,17 +10991,19 @@ var Wheel = function () {
           stroke: opt.color.line,
           strokeWidth: 2
         });
-
         var fontSize = d.fontSize ? d.fontSize : opt.fontSize ? opt.fontSize : baseFontSize;
         var textSum = 0; // a-z0-9 为 1，其他为 2
-        for (var _i = 0; _i < d.text.length; ++_i) {
-          if (d.text[_i].match(/\w/)) {
+
+        for (var _i2 = 0; _i2 < d.text.length; ++_i2) {
+          if (d.text[_i2].match(/\w/)) {
             textSum += 1;
           } else textSum += 2;
         }
+
         if (!opt.fontSize && !d.fontSize) {
           fontSize = fontSize * textSum / 2 > dLen * opt.textBottomPercentage ? dLen * opt.textBottomPercentage / textSum * 2 : fontSize;
         }
+
         var text = svg.text(opt.center[0], opt.pos[1] + opt.radius - r * opt.textBottomPercentage * Snap.cos(self[deg] / 2) - fontSize, d.text);
         text.attr({
           fill: d.fontColor ? d.fontColor : opt.color.prizeFont,
@@ -10984,7 +11011,6 @@ var Wheel = function () {
         });
         var box = text.node.getBoundingClientRect();
         text.transform(new Snap.Matrix().translate(-Math.round(box.width / 2), 2));
-
         var g = svg.g(pie, text).transform(new Snap.Matrix().rotate(self[deg] * Number(i), opt.center[0], opt.center[1]));
         self[turntable].add(g);
       }
@@ -10994,7 +11020,6 @@ var Wheel = function () {
     value: function value(svg) {
       var self = this;
       if (self[button]) return;
-
       var opt = self.option;
 
       if (opt.button && typeof opt.button === 'string') {
@@ -11011,26 +11036,29 @@ var Wheel = function () {
           end = _describeArc4[3];
 
       var top = [center[0], center[1] - r / Snap.cos(deg)];
-      var pathD = pathArc + 'L' + top[0] + ',' + top[1] + 'L' + end.x + ',' + end.y + 'L' + center[0] + ',' + center[1];
+      var pathD = "".concat(pathArc, "L").concat(top[0], ",").concat(top[1], "L").concat(end.x, ",").concat(end.y, "L").concat(center[0], ",").concat(center[1]);
       var b = svg.path(pathD);
       b.attr({
         fill: opt.color.button,
         filter: svg.filter(Snap.filter.shadow(0, 3, 3, 'black', 0.5))
       });
-
       var text = null;
+
       if (opt.buttonText !== '') {
         var maxLen = r * 2 * 0.8;
         var fontSize = opt.buttonFontSize ? opt.buttonFontSize : baseFontSize;
         var textSum = 0;
+
         for (var i = 0; i < opt.buttonText.length; ++i) {
           if (opt.buttonText[i].match(/\w/)) {
             textSum += 1;
           } else textSum += 2;
         }
+
         if (!opt.buttonFontSize) {
           fontSize = fontSize * textSum / 2 > maxLen ? maxLen / textSum * 2 : fontSize;
         }
+
         text = svg.text(center[0], center[1], opt.buttonText);
         text.attr({
           fill: opt.color.buttonFont,
@@ -11047,15 +11075,14 @@ var Wheel = function () {
     value: function value() {
       var self = this;
       var opt = self.option;
-
       self[turntable].node.style['transform-origin'] = 'center';
-
       self[button].node.style.cursor = 'pointer';
       self[button].node.style['transform-origin'] = 'center';
       self[button].hover(function () {
         if (opt.onButtonHover && typeof opt.onButtonHover === 'function') {
           return opt.onButtonHover(anime, self[button]);
         }
+
         anime({
           targets: self[button].node,
           scale: 1.2,
@@ -11079,19 +11106,19 @@ var Wheel = function () {
       if (self[running]) return;
       var opt = self.option;
       if (!opt.el) throw new Error('el is undefined in Wheel');
-      if (!opt.data) throw new Error('data is undefined in Wheel');
+      if (!opt.data) throw new Error('data is undefined in Wheel'); // 抽奖次数超过 limit
 
-      // 抽奖次数超过 limit
       if (opt.limit > 0 && self[count] >= opt.limit) {
         return opt.onFail && typeof opt.onFail === 'function' ? opt.onFail() : null;
-      }
+      } // rotate animation
 
-      // rotate animation
+
       var runAnime = function runAnime(pie) {
         if (self[rotation] > 0) {
           var revision = 360 - self[rotation] % 360;
           self[rotation] += revision;
         }
+
         self[rotation] += getRotation(pie, self[deg], opt.turn);
         anime({
           targets: self[turntable].node,
@@ -11103,6 +11130,7 @@ var Wheel = function () {
           complete: function complete() {
             self[running] = false;
             ++self[count];
+
             if (opt.onSuccess && typeof opt.onSuccess === 'function') {
               var d = opt.clockwise ? opt.data[(opt.data.length - pie) % opt.data.length] : opt.data[pie];
               opt.onSuccess(d);
@@ -11114,6 +11142,7 @@ var Wheel = function () {
       var random = Math.random() * self[weightSum];
       var randomWeight = 0,
           pie = 0;
+
       if (opt.mode === 'online' && opt.url) {
         axios.get(opt.url).then(function (response) {
           pie = response.data;
@@ -11124,6 +11153,7 @@ var Wheel = function () {
       } else {
         for (var i in self[weight]) {
           randomWeight += self[weight][i];
+
           if (randomWeight > random) {
             pie = Number(i);
             runAnime(pie);
@@ -11135,9 +11165,7 @@ var Wheel = function () {
   }]);
 
   return Wheel;
-}();
-
-// 获取内圈半径
+}(); // 获取内圈半径
 
 
 function getInRadius(radius) {
@@ -11157,29 +11185,25 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
 function describeArc(x, y, radius, startAngle, endAngle) {
   var start = polarToCartesian(x, y, radius, endAngle);
   var end = polarToCartesian(x, y, radius, startAngle);
-
   var largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
-
   var d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y, 'L', x, y, 'L', start.x, start.y].join(' ');
   var l = start.x - end.x; // 扇形最大宽度
-  return [d, l, start, end];
-}
 
-// 获取旋转角度
+  return [d, l, start, end];
+} // 获取旋转角度
+
+
 function getRotation(i, deg, minTurn) {
   return minTurn * 360 + i * deg;
-}
+} // 获取图片尺寸
 
-// 获取图片尺寸
+
 function getImageSize(src, svg, doc) {
   var img = doc.createElement('img');
   var body = doc.body;
   body.appendChild(img);
   img.src = src;
-  console.log(img.naturalHeight);
-
-  var size = [img.width || img.naturalWidth || img.offsetWidth || img.getBoundingClientRect().width || 50, img.height || img.naturalHeight || img.offsetHeight || img.getBoundingClientRect().height || 50];
-  console.log(size);
+  var size = [img.width || img.naturalWidth || img.getBoundingClientRect().width || 50, img.height || img.naturalHeight || img.getBoundingClientRect().height || 50];
   doc.body.removeChild(img);
   return size;
 }
@@ -11189,6 +11213,7 @@ function wheel(arg) {
 }
 
 global.Wheel = Wheel; // 变成一个全局变量
+
 global.wheel = wheel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

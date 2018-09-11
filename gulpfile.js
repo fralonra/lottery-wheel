@@ -19,7 +19,7 @@ const buildJs = () => {
     .pipe(bro({
       transform: [
         babelify.configure({
-          presets: ['es2015']
+          presets: ['@babel/preset-env']
         })
       ]
     }))
