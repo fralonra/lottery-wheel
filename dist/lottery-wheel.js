@@ -11140,8 +11140,8 @@ function () {
       };
 
       var random = Math.random() * self[weightSum];
-      var randomWeight = 0,
-          pie = 0;
+      var randomWeight = 0;
+      var pie = 0;
 
       if (opt.mode === 'online' && opt.url) {
         axios.get(opt.url).then(function (response) {
