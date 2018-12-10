@@ -30,7 +30,7 @@
     "animejs": "^2.2.0",
     "axios": "^0.18.0",
     "babelify": "^10.0.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-bro": "^1.0.3",
     "gulp-changed": "^3.2.0",
     "gulp-clean": "^0.4.0",
