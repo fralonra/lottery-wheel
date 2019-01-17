@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "lint": "standard --fix src/*.js"
+    "lint": "standard --fix src/*.js",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",

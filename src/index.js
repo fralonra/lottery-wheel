@@ -60,7 +60,7 @@ class Wheel {
       turn: 4, // 最小转动圈数
       clockwise: true, // 顺时针旋转
       draw: true, // 立刻绘制
-      theme: 'default', // 主题
+      theme: 'default' // 主题
     }
     Object.keys(option).forEach(function (k) {
       self.option[k] = option[k]
