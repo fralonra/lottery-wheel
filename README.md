@@ -25,20 +25,9 @@ Supposed you have an element whose id is 'wheel' in your html file.
 <svg id="wheel"></svg>
 ```
 
-Then you can start directly by:
+Then you can do the following to create a wheel:
 ```javascript
-wheel({
-  el: document.getElementById('wheel'),
-  data: ['prize A', 'prize B', 'prize C', 'prize D'],
-  onSuccess(data) {
-    console.log(data.text);
-  }
-});
-```
-
-Or you can also create an instance and pass it to a variable:
-```javascript
-const w = new Wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: [{
     text: 'apple',
@@ -67,13 +56,13 @@ More for `option`, see [below](#options).
 ### draw()
 To manually render the wheel when the `draw` property is set to false.
 ```javascript
-const w = new Wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['Beijing', 'London', 'New York', 'Tokyo'],
   draw: false
 });
 setTimeout(() => {
-  w.draw();
+  wheel.draw();
 }, 2000);
 ```
 
@@ -95,8 +84,6 @@ setTimeout(() => {
 | draw | If true, the wheel will be rendered immediately the instance created. Otherwise, you should call [draw](#draw) to manually render it. | Boolean | true |
 | clockwise | If true, the rotation movement will be clockwise. Otherwise, it will be counter-clockwise. | Boolean | true |
 | theme | The color preset to be used. [Details](#themes). | String | 'default' |
-| mode | How the wheel determine the result. [Details](#mode). | String | 'default' |
-| url | Works only when the `mode` is set to `online`. [Details](#mode). | String | - |
 | image | Allow you to render the wheel using image resources. See [image](#image). | Object | - |
 | color | An object used to override the color in the current theme. See [themes](#themes) | Object | - |
 | onSuccess | The callback function called when a prize is drawn successfully. [Details](#onsuccess). | Function | - |
@@ -107,7 +94,7 @@ setTimeout(() => {
 The `el` property defines the element where to render the wheel. You should pass a
 DOM Element to it:
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: []
 });
@@ -118,7 +105,7 @@ The `data` property use an array to define the things relating to the lottery ga
 
 The simplest way is to put the name of each prize in an array:
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['Beijing', 'London', 'New York', 'Tokyo']
 });
@@ -129,7 +116,7 @@ It will generate the following wheel with default [options](#options). Every pri
 
 You can also custom each prize by making it an object. The properties for the 'prize' object are listed [here](#prize-object).
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: [{
     text: 'Beijing',
@@ -149,7 +136,7 @@ The callback function called when a prize is drawn successfully.
 | data | The drawn '[prize](#prize-object)' object. | Object |
 
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['prize A', 'prize B', 'prize C', 'prize D'],
   onSuccess(data) {
@@ -162,7 +149,7 @@ wheel({
 The callback function called when trying to draw prize while has already drawn the maximum times (defined in `limit`). Notice that by the default options, one can draw unlimited times.
 
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['prize A', 'prize B', 'prize C', 'prize D'],
   limit: 1,
@@ -182,7 +169,7 @@ Called when the mouse is moving over the button.
 | button | Refer to the Snap [Element](http://snapsvg.io/docs/#Element) where the button lies. | Object |
 
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['prize A', 'prize B', 'prize C', 'prize D'],
   onButtonHover(anime, button) {
@@ -206,7 +193,7 @@ wheel({
 | fontSize | The size of the text (will override `fontSize` of Wheel). | Number | - |
 
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: [{
     text: 'Beijing',
@@ -274,7 +261,7 @@ dark: {
 
 You can also change the color by setting `color` property.
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['Beijing', 'London', 'New York', 'Tokyo'],
   theme: 'dark',
@@ -285,20 +272,6 @@ wheel({
 });
 ```
 ![setting color](/doc/images/color.png)
-
-## Mode
-The `mode` property currently supports following values:
-1. default: The result will be determined by the `chance` property defined in the prize object.
-2. online: The result will be determined by the response returned from the url which defined in `url` property. For example:
-```javascript
-wheel({
-    el: document.getElementById('wheel'),
-    data: ['Beijing', 'London', 'New York', 'Tokyo'],
-    mode: 'online',
-    url: '/your/upstream/url' // if the response is 1, the result will be 'Lodon'.
-});
-```
-By this way, it's accessible to make the wheel responsive to the backend server.
 
 ## Image
 The `image` property lets you render the wheel using the existing resources by setting an object. It will make an `image` SVG element and it supports jpeg, png and svg formats.
@@ -311,7 +284,7 @@ The `image` property lets you render the wheel using the existing resources by s
 
 Here's an example of how it looks like when using the images in [/doc/images](https://github.com/fralonra/lottery-wheel/tree/master/doc/images) folder in this repo.
 ```javascript
-wheel({
+const wheel = new Wheel({
   el: document.getElementById('wheel'),
   data: ['Prize A', 'Prize B', 'Prize C', 'Prize D', 'Prize E', 'Prize F'],
   image: {

@@ -1,5 +1,6 @@
-import anime from 'animejs'
-import Snap from 'snapsvg'
+const anime = require('animejs')
+const Snap = require('snapsvg')
+const axios = require('axios')
 
 const count = Symbol('count') // 已抽奖次数
 const deg = Symbol('deg') // pie 夹角
@@ -46,7 +47,7 @@ const themes = {
 }
 
 class Wheel {
-  constructor (option = {}) {
+  constructor(option = {}) {
     const self = this
     self.option = {
       pos: [0, 0], // 左上角坐标
@@ -61,6 +62,7 @@ class Wheel {
       clockwise: true, // 顺时针旋转
       draw: true, // 立刻绘制
       theme: 'default', // 主题
+      mode: 'default' // 模式
     }
     Object.keys(option).forEach(function (k) {
       self.option[k] = option[k]
@@ -81,7 +83,7 @@ class Wheel {
     if (self.option.draw) self.draw()
   }
 
-  [checkPrize] () {
+  [checkPrize]() {
     const self = this
     const opt = self.option
     for (let i in opt.data) {
@@ -100,7 +102,7 @@ class Wheel {
     }
   }
 
-  draw () {
+  draw() {
     const self = this
     const opt = self.option
     if (!opt.el) throw new Error('el is undefined in Wheel')
@@ -122,7 +124,7 @@ class Wheel {
     self[animeFunc]()
   }
 
-  [drawDefault] (svg) {
+  [drawDefault](svg) {
     const self = this
     if (self[turntable] && self[button]) return
 
@@ -149,7 +151,7 @@ class Wheel {
     self[drawButton](svg)
   }
 
-  [drawResource] (svg) {
+  [drawResource](svg) {
     const self = this
     const opt = self.option
 
@@ -171,7 +173,7 @@ class Wheel {
     return self[drawDefault](svg)
   }
 
-  [drawTurntable] (svg) {
+  [drawTurntable](svg) {
     const self = this
     if (self[turntable]) return
 
@@ -227,7 +229,7 @@ class Wheel {
     }
   }
 
-  [drawButton] (svg) {
+  [drawButton](svg) {
     const self = this
     if (self[button]) return
 
@@ -274,7 +276,7 @@ class Wheel {
     self[button] = svg.g(b, text)
   }
 
-  [animeFunc] () {
+  [animeFunc]() {
     const self = this
     const opt = self.option
 
@@ -303,7 +305,7 @@ class Wheel {
     })
   }
 
-  [run] () {
+  [run]() {
     const self = this
     if (self[running]) return
     const opt = self.option
@@ -326,12 +328,12 @@ class Wheel {
         targets: self[turntable].node,
         rotate: opt.clockwise ? String(self[rotation]) + 'deg' : '-' + String(self[rotation]) + 'deg',
         duration: opt.duration,
-        begin () {
+        begin() {
           self[running] = true
         },
-        complete () {
+        complete() {
           self[running] = false
-          ++self[count]
+            ++self[count]
           if (opt.onSuccess && typeof opt.onSuccess === 'function') {
             const d = opt.clockwise ? opt.data[(opt.data.length - pie) % opt.data.length] : opt.data[pie]
             opt.onSuccess(d)
@@ -341,26 +343,38 @@ class Wheel {
     }
 
     const random = Math.random() * self[weightSum]
-    let randomWeight = 0; let pie = 0
-    for (let i in self[weight]) {
-      randomWeight += self[weight][i]
-      if (randomWeight > random) {
-        pie = Number(i)
-        runAnime(pie)
-        break
+    let randomWeight = 0;
+    let pie = 0
+    if (opt.mode === 'online' && opt.url) {
+      axios.get(opt.url)
+        .then((response) => {
+          pie = response.data
+          runAnime(pie)
+        })
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } else {
+      for (let i in self[weight]) {
+        randomWeight += self[weight][i]
+        if (randomWeight > random) {
+          pie = Number(i)
+          runAnime(pie)
+          break
+        }
       }
     }
   }
 }
 
 // 获取内圈半径
-function getInRadius (radius) {
+function getInRadius(radius) {
   if (radius < 50) return radius
   if (radius < 100) return radius - 10
   return Math.round(radius / 10) * 9
 }
 
-function polarToCartesian (centerX, centerY, radius, angleInDegrees) {
+function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
   const angleInRadians = (angleInDegrees - 90) * Math.PI / 180
   return {
     x: centerX + (radius * Math.cos(angleInRadians)),
@@ -368,7 +382,7 @@ function polarToCartesian (centerX, centerY, radius, angleInDegrees) {
   }
 }
 
-function describeArc (x, y, radius, startAngle, endAngle) {
+function describeArc(x, y, radius, startAngle, endAngle) {
   const start = polarToCartesian(x, y, radius, endAngle)
   const end = polarToCartesian(x, y, radius, startAngle)
 
@@ -385,12 +399,12 @@ function describeArc (x, y, radius, startAngle, endAngle) {
 }
 
 // 获取旋转角度
-function getRotation (i, deg, minTurn) {
+function getRotation(i, deg, minTurn) {
   return minTurn * 360 + i * deg
 }
 
 // 获取图片尺寸
-function getImageSize (src, svg, doc) {
+function getImageSize(src, svg, doc) {
   const img = doc.createElement('img')
   const body = doc.body
   body.appendChild(img)
@@ -404,4 +418,4 @@ function getImageSize (src, svg, doc) {
   return size
 }
 
-export default Wheel
+module.exports = Wheel

@@ -4,7 +4,7 @@
   "description": "A library helps you performing a wheel for lottery game.",
   "main": "index.js",
   "scripts": {
-    "build": "gulp build",
+    "build": "rollup -c rollup.config.js",
     "lint": "standard --fix src/*.js"
   },
   "repository": {
@@ -25,21 +25,14 @@
   "homepage": "https://github.com/fralonra/lottery-wheel#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
     "animejs": "^3.0.0",
-    "axios": "^0.18.0",
-    "babelify": "^10.0.0",
-    "gulp": "^4.0.0",
-    "gulp-bro": "^1.0.3",
-    "gulp-changed": "^3.2.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-rename": "^1.2.3",
-    "gulp-uglify": "^3.0.0",
+    "rollup": "^1.1.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-filesize": "^6.0.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-terser": "^4.0.2",
     "snapsvg": "^0.5.1",
+    "snazzy": "^8.0.0",
     "standard": "^12.0.1"
-  },
-  "eslintIgnore": [
-    "dist"
-  ]
+  }
 }
