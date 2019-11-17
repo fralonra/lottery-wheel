@@ -1,12 +1,13 @@
 {
   "name": "lottery-wheel",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A library helps you performing a wheel for lottery game.",
   "main": "index.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "lint": "standard --fix src/*.js",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test": "npm run lint"
   },
   "repository": {
     "type": "git",
