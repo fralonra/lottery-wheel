@@ -41,6 +41,11 @@
     "snazzy": "^8.0.0",
     "standard": "^14.0.0"
   },
+  "standard": {
+    "env": [
+      "browser"
+    ]
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
