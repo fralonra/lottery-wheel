@@ -25,18 +25,19 @@
     "url": "https://github.com/fralonra/lottery-wheel/issues"
   },
   "homepage": "https://github.com/fralonra/lottery-wheel#readme",
-  "dependencies": {},
+  "dependencies": {
+    "animejs": "^3.0.0",
+    "snapsvg": "^0.5.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "animejs": "^3.0.0",
     "husky": "^4.2.5",
     "rollup": "^1.1.0",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-filesize": "^6.0.0",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-terser": "^5.0.0",
-    "snapsvg": "^0.5.1",
     "snazzy": "^8.0.0",
     "standard": "^14.0.0"
   },
