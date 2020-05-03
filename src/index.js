@@ -136,7 +136,7 @@ class Wheel {
       }
       if (res.button && typeof res.button === 'string') {
         if (!res.offset || typeof res.offset !== 'number') res.offset = 0
-        const size = getImageSize(res.button)
+        const size = [50, 50]
         const buttonHeight = (size[1] * opt.buttonWidth) / size[0]
         this._button = svg
           .image(res.button)
@@ -388,12 +388,6 @@ function describeArc (x, y, radius, startAngle, endAngle) {
 
 function getRotation (i, deg, minTurn) {
   return minTurn * 360 + i * deg
-}
-
-function getImageSize (src) {
-  const img = new Image()
-  img.src = src
-  return [img.width, img.height]
 }
 
 export default Wheel
