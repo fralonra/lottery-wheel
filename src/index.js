@@ -192,14 +192,14 @@ class Wheel {
       }
       const text = svg
         .plain(d.text)
+        .font({ size: fontSize })
+        .fill(d.fontColor || opt.color.prizeFont)
         .move(
           this._center[0],
           opt.pos[1] +
             opt.radius -
             opt.inRadius * opt.textBottomPercentage - fontSize
         )
-        .fill(d.fontColor || opt.color.prizeFont)
-        .font({ size: fontSize })
       text.translate(-text.length() / 2, 2)
       const g = svg
         .group()
@@ -266,10 +266,10 @@ class Wheel {
       }
       text = svg
         .plain(opt.buttonText)
-        .move(center[0], center[1] - fontSize / 2)
-        .fill(opt.color.buttonFont)
         .font({ size: fontSize })
-      text.translate(-text.length() / 2, 2)
+        .fill(opt.color.buttonFont)
+        .move(center[0], center[1] - fontSize / 2)
+      text.translate(-text.length() / 2, 0)
     }
 
     this._button = svg.group()
