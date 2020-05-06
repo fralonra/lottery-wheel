@@ -4,7 +4,7 @@
 
 # lottery-wheel
 
-A library helps you performing a wheel for lottery game. Using [svg.js](https://svgjs.com/) and [anime.js](https://github.com/juliangarnier/anime/).
+A library helps you performing a wheel for lottery game. Using [anime.js](https://github.com/juliangarnier/anime/) underlying.
 
 [demo](https://fralonra.github.io/lottery-wheel/demo/)
 
