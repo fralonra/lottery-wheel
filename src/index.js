@@ -246,10 +246,7 @@ class Wheel {
     const top = [center[0], center[1] - r / Math.cos(degreeToRadians(deg))]
     const pathD = `${pathArc} L ${top[0]} ${top[1]} L ${end.x} ${end.y} L ${center[0]} ${center[1]}`
     const button = svg.path(pathD, { fill: opt.color.button })
-    svg.dropShadow(this._svg, button, {
-      blurStdDeviation: 3,
-      offsetDy: 3
-    })
+    svg.dropShadow(this._svg, button, 0, 3, 3, 0.5)
 
     let text = null
     if (opt.buttonText !== '') {

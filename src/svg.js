@@ -48,23 +48,25 @@ export function circle (cx, cy, radius, attrs = {}) {
   return createElNS('circle', attrs)
 }
 
-export function dropShadow (rootEl, el, attrs = {}) {
+export function dropShadow (rootEl, el, offsetX, offsetY, blur, opacity = 1) {
   const id = `drop-shadow-${did++}`
   const defs = createElNS('defs')
   const filter = createElNS('filter', { id, filterUnits: 'userSpaceOnUse' })
-  const blur = createElNS('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: attrs.blurStdDeviation || 0 })
-  const offset = createElNS('feOffset', { dx: attrs.offsetDx || 0, dy: attrs.offsetDy || 0 })
-  const transfer = createElNS('feComponentTransfer')
-  const funcA = createElNS('feFuncA', { type: 'linear', slope: 0.5 })
-  transfer.appendChild(funcA)
+  const gBlur = createElNS('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: blur })
+  const offset = createElNS('feOffset', { dx: offsetX, dy: offsetY })
   const merge = createElNS('feMerge')
   const mergeNodeA = createElNS('feMergeNode')
   const mergeNodeB = createElNS('feMergeNode', { in: 'SourceGraphic' })
   merge.appendChild(mergeNodeA)
   merge.appendChild(mergeNodeB)
-  filter.appendChild(blur)
+  filter.appendChild(gBlur)
   filter.appendChild(offset)
-  filter.appendChild(transfer)
+  if (opacity !== 1) {
+    const transfer = createElNS('feComponentTransfer')
+    const funcA = createElNS('feFuncA', { type: 'linear', slope: opacity })
+    transfer.appendChild(funcA)
+    filter.appendChild(transfer)
+  }
   filter.appendChild(merge)
   defs.appendChild(filter)
   rootEl.appendChild(defs)
