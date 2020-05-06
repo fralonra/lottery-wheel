@@ -20,6 +20,11 @@ Then link `lottery-wheel.min.js` or `lottery-wheel.js` in your HTML.
 <script src="/path/to/lottery-wheel.min.js"></script>
 ```
 
+ESM is supported as well.
+```js
+import Wheel from 'lottery-wheel'
+```
+
 Supposed you have an element whose id is 'wheel' in your html file.
 ```html
 <svg id="wheel"></svg>
