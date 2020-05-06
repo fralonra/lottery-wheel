@@ -1,6 +1,6 @@
 import anime from 'animejs'
-import { SVG } from '@svgdotjs/svg.js'
-import '@svgdotjs/svg.filter.js'
+import * as svg from './svg'
+import { degreeToRadians, polarToCartesian } from './utils'
 
 const baseFontSize = 16
 
@@ -94,18 +94,27 @@ class Wheel {
 
     this._center = opt.pos.map(p => p + opt.radius)
 
-    const svg = SVG(opt.el)
-      .size(opt.radius * 2, opt.radius * 2)
+    const svgAttrs = {
+      width: opt.radius * 2,
+      height: opt.radius * 2
+    }
+    if (opt.el.tagName !== 'svg') {
+      this._svg = svg.svg(svgAttrs)
+      opt.el.appendChild(this._svg)
+    } else {
+      this._svg = opt.el
+      svg.useSVG(opt.el, svgAttrs)
+    }
 
     this._deg = 360 / opt.data.length
 
-    if (opt.image) this._drawResource(svg)
-    this._drawDefault(svg)
+    if (opt.image) this._drawResource()
+    this._drawDefault()
 
     this._animeFunc()
   }
 
-  _drawDefault (svg) {
+  _drawDefault () {
     if (this._turntable && this._button) return
 
     const opt = this.option
@@ -120,49 +129,55 @@ class Wheel {
       opt.inRadius = opt.radius
     }
 
-    if (!this._turntable) this._drawTurntable(svg)
-    if (!this._button) this._drawButton(svg)
+    if (!this._turntable) this._drawTurntable()
+    if (!this._button) this._drawButton()
   }
 
-  _drawResource (svg) {
+  _drawResource () {
     const opt = this.option
     const res = opt.image
     if (typeof res === 'object' && Object.keys(res).length > 0) {
       if (res.turntable && typeof res.turntable === 'string') {
-        this._turntable = svg
-          .image(res.turntable)
-          .move(opt.pos[0], opt.pos[1])
-          .size(opt.radius * 2, opt.radius * 2)
+        this._turntable = svg.image(res.turntable, {
+          width: opt.radius * 2,
+          height: opt.radius * 2,
+          x: opt.pos[0],
+          y: opt.pos[1]
+        })
+        this._svg.appendChild(this._turntable)
       }
       if (res.button && typeof res.button === 'string') {
         if (!res.offset || typeof res.offset !== 'number') res.offset = 0
         const size = [50, 50]
         const buttonHeight = (size[1] * opt.buttonWidth) / size[0]
-        this._button = svg
-          .image(res.button)
-          .move(
-            this._center[0] - opt.buttonWidth / 2,
-            this._center[1] + res.offset - buttonHeight / 2
-          )
-          .size(opt.buttonWidth, buttonHeight)
+        this._button = svg.image(res.button, {
+          width: opt.buttonWidth,
+          height: buttonHeight,
+          x: this._center[0] - opt.buttonWidth / 2,
+          y: this._center[1] + res.offset - buttonHeight / 2
+        })
+        this._svg.appendChild(this._button)
       }
     }
   }
 
-  _drawTurntable (svg) {
+  _drawTurntable () {
     if (this._turntable) return
 
     const opt = this.option
-    svg
-      .circle(opt.radius * 2)
-      .center(this._center[0], this._center[1])
-      .fill(opt.color.border)
-    svg
-      .circle(opt.inRadius * 2)
-      .center(this._center[0], this._center[1])
-      .fill(opt.color.prize)
+    this._svg.appendChild(
+      svg.circle(this._center[0], this._center[1], opt.radius, {
+        fill: opt.color.border
+      })
+    )
+    this._svg.appendChild(
+      svg.circle(this._center[0], this._center[1], opt.inRadius, {
+        fill: opt.color.prize
+      })
+    )
 
-    this._turntable = svg.group()
+    this._turntable = svg.g()
+    this._svg.appendChild(this._turntable)
     for (const d of opt.data) {
       const [pathD, dLen] = describeArc(
         this._center[0],
@@ -172,10 +187,11 @@ class Wheel {
         this._deg / 2
       )
 
-      const pie = svg
-        .path(pathD)
-        .fill(d.color || opt.color.prize)
-        .stroke({ color: opt.color.line, width: 2 })
+      const pie = svg.path(pathD, {
+        fill: d.color || opt.color.prize,
+        stroke: opt.color.line,
+        strokeWidth: 2
+      })
 
       let fontSize = d.fontSize || opt.fontSize
       if (!fontSize) {
@@ -190,31 +206,28 @@ class Wheel {
             ? ((dLen * opt.textBottomPercentage) / textSum) * 2
             : baseFontSize
       }
-      const text = svg
-        .plain(d.text)
-        .font({ size: fontSize })
-        .fill(d.fontColor || opt.color.prizeFont)
-        .move(
-          this._center[0],
+      const text = svg.text(d.text, {
+        x: this._center[0],
+        y:
           opt.pos[1] +
-            opt.radius -
-            opt.inRadius * opt.textBottomPercentage - fontSize
-        )
-      text.translate(-text.length() / 2, 2)
-      const g = svg
-        .group()
-        .rotate(
-          this._deg * opt.data.indexOf(d),
-          this._center[0],
-          this._center[1]
-        )
-      g.add(pie)
-      g.add(text)
-      this._turntable.add(g)
+          opt.radius -
+          opt.inRadius * opt.textBottomPercentage,
+        fontSize,
+        fill: d.fontColor || opt.color.prizeFont
+      })
+      const g = svg.g([pie, text])
+      svg.rotate(
+        g,
+        degreeToRadians(this._deg * opt.data.indexOf(d)),
+        this._center[0],
+        this._center[1]
+      )
+      this._turntable.appendChild(g)
+      svg.translate(text, -text.getComputedTextLength() / 2, 0)
     }
   }
 
-  _drawButton (svg) {
+  _drawButton () {
     if (this._button) return
 
     const opt = this.option
@@ -232,21 +245,11 @@ class Wheel {
     )
     const top = [center[0], center[1] - r / Math.cos(degreeToRadians(deg))]
     const pathD = `${pathArc} L ${top[0]} ${top[1]} L ${end.x} ${end.y} L ${center[0]} ${center[1]}`
-    const button = svg.path(pathD)
-      .fill(opt.color.button)
-      .filterWith(function (add) {
-        add.$autoSetIn = false
-        add.gaussianBlur(3).in(add.$sourceAlpha)
-        add.offset(0, 3)
-        add.componentTransfer(function (add) {
-          add.funcA({
-            type: 'linear',
-            slope: 0.5
-          })
-        })
-        add.merge([null, add.$source])
-        add.attr('filterUnits', 'userSpaceOnUse')
-      })
+    const button = svg.path(pathD, { fill: opt.color.button })
+    svg.dropShadow(this._svg, button, {
+      blurStdDeviation: 3,
+      offsetDy: 3
+    })
 
     let text = null
     if (opt.buttonText !== '') {
@@ -265,44 +268,45 @@ class Wheel {
             : baseFontSize
       }
       text = svg
-        .plain(opt.buttonText)
-        .font({ size: fontSize })
-        .fill(opt.color.buttonFont)
-        .move(center[0], center[1] - fontSize / 2)
-      text.translate(-text.length() / 2, 0)
+        .text(opt.buttonText, {
+          x: center[0],
+          y: center[1],
+          fontSize,
+          fill: opt.color.buttonFont
+        })
     }
 
-    this._button = svg.group()
-    this._button.add(button)
-    this._button.add(text)
+    this._button = svg.g([button, text])
+    this._svg.appendChild(this._button)
+    svg.translate(text, -text.getComputedTextLength() / 2, 0)
   }
 
   _animeFunc () {
     const opt = this.option
 
-    this._turntable.node.style['transform-origin'] = 'center'
+    this._turntable.style['transform-origin'] = 'center'
 
-    this._button.node.style.cursor = 'pointer'
-    this._button.node.style['transform-origin'] = 'center'
-    this._button.mouseover(() => {
+    this._button.style.cursor = 'pointer'
+    this._button.style['transform-origin'] = 'center'
+    this._button.addEventListener('mouseover', () => {
       if (opt.onButtonHover && typeof opt.onButtonHover === 'function') {
         opt.onButtonHover(anime, this._button)
         return
       }
       anime({
-        targets: this._button.node,
+        targets: this._button,
         scale: 1.2,
         duration: 500
       })
     })
-    this._button.mouseout(() => {
+    this._button.addEventListener('mouseout', () => {
       anime({
-        targets: this._button.node,
+        targets: this._button,
         scale: 1,
         duration: 500
       })
     })
-    this._button.click(() => {
+    this._button.addEventListener('click', () => {
       this._run()
     })
   }
@@ -323,7 +327,7 @@ class Wheel {
       }
       this._rotation += getRotation(pie, this._deg, opt.turn)
       anime({
-        targets: this._turntable.node,
+        targets: this._turntable,
         rotate: opt.clockwise
           ? this._rotation + 'deg'
           : '-' + this._rotation + 'deg',
@@ -362,18 +366,6 @@ function getInnerRadius (radius) {
   if (radius < 50) return radius
   if (radius < 100) return radius - 10
   return Math.round(radius / 10) * 9
-}
-
-function degreeToRadians (degree) {
-  return degree * Math.PI / 180
-}
-
-function polarToCartesian (centerX, centerY, radius, angleInDegrees) {
-  const angleInRadians = degreeToRadians(angleInDegrees - 90)
-  return {
-    x: centerX + radius * Math.cos(angleInRadians),
-    y: centerY + radius * Math.sin(angleInRadians)
-  }
 }
 
 function describeArc (x, y, radius, startAngle, endAngle) {
