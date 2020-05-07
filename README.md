@@ -25,7 +25,7 @@ ESM is supported as well.
 import Wheel from 'lottery-wheel'
 ```
 
-Supposed you have an element whose id is 'wheel' in your html file.
+Suppose you have an element whose id is 'wheel' in your html file.
 ```html
 <svg id="wheel"></svg>
 ```
