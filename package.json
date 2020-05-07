@@ -31,8 +31,11 @@
     "animejs": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
+    "@rollup/plugin-babel": "^5.0.0",
     "husky": "^4.2.5",
     "rollup": "^1.1.0",
     "rollup-plugin-commonjs": "^10.0.0",
@@ -42,6 +45,7 @@
     "snazzy": "^8.0.0",
     "standard": "^14.0.0"
   },
+  "browserslist": "> 0.25%, not dead",
   "standard": {
     "env": [
       "browser"
