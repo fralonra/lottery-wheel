@@ -1,8 +1,8 @@
-import { terser } from 'rollup-plugin-terser'
 import babel from '@rollup/plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import filesize from 'rollup-plugin-filesize'
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import { terser } from 'rollup-plugin-terser'
 
 const babelOption = {
   presets: [['@babel/env', { modules: false }]]
