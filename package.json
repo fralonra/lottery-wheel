@@ -26,8 +26,6 @@
   },
   "homepage": "https://github.com/fralonra/lottery-wheel#readme",
   "dependencies": {
-    "@svgdotjs/svg.filter.js": "^3.0.7",
-    "@svgdotjs/svg.js": "^3.0.16",
     "animejs": "^3.0.0"
   },
   "devDependencies": {
