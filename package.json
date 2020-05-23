@@ -38,7 +38,7 @@
     "husky": "^4.2.5",
     "rollup": "^1.1.0",
     "rollup-plugin-filesize": "^6.0.0",
-    "rollup-plugin-terser": "^5.0.0",
+    "rollup-plugin-terser": "^6.0.0",
     "snazzy": "^8.0.0",
     "standard": "^14.0.0"
   },
