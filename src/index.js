@@ -92,7 +92,7 @@ class Wheel {
   draw () {
     const opt = this.option
 
-    this._center = opt.pos.map(p => p + opt.radius)
+    this._center = opt.pos.map((p) => p + opt.radius)
 
     const svgAttrs = {
       width: opt.radius * 2,
@@ -208,10 +208,7 @@ class Wheel {
       }
       const text = svg.text(d.text, {
         x: this._center[0],
-        y:
-          opt.pos[1] +
-          opt.radius -
-          opt.inRadius * opt.textBottomPercentage,
+        y: opt.pos[1] + opt.radius - opt.inRadius * opt.textBottomPercentage,
         fontSize,
         fill: d.fontColor || opt.color.prizeFont
       })
@@ -264,13 +261,12 @@ class Wheel {
             ? (maxLen / textSum) * 2
             : baseFontSize
       }
-      text = svg
-        .text(opt.buttonText, {
-          x: center[0],
-          y: center[1],
-          fontSize,
-          fill: opt.color.buttonFont
-        })
+      text = svg.text(opt.buttonText, {
+        x: center[0],
+        y: center[1],
+        fontSize,
+        fill: opt.color.buttonFont
+      })
     }
 
     this._button = svg.g([button, text])
@@ -317,7 +313,7 @@ class Wheel {
       return
     }
 
-    const runAnime = pie => {
+    const runAnime = (pie) => {
       if (this._rotation > 0) {
         const revision = 360 - (this._rotation % 360)
         this._rotation += revision

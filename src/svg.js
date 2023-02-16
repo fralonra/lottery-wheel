@@ -35,9 +35,13 @@ function createMatrix (a = 1, b = 0, c = 0, d = 1, e = 0, f = 0) {
 }
 
 function getMatrix (el) {
-  const transformString = el.hasAttribute('transform')
-  if (!transformString || transformString.indexOf('matrix') < 0) return createMatrix()
-  const values = transformString.split(',')
+  const transformString = el.getAttribute('transform')
+  if (!transformString || transformString.indexOf('matrix') < 0) { return createMatrix() }
+  const values = transformString
+    .split('matrix(')[1]
+    .split(')')[0]
+    .split(',')
+    .map((v) => parseInt(v))
   return createMatrix(...values)
 }
 
@@ -52,7 +56,10 @@ export function dropShadow (rootEl, el, offsetX, offsetY, blur, opacity = 1) {
   const id = `drop-shadow-${did++}`
   const defs = createElNS('defs')
   const filter = createElNS('filter', { id, filterUnits: 'userSpaceOnUse' })
-  const gBlur = createElNS('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: blur })
+  const gBlur = createElNS('feGaussianBlur', {
+    in: 'SourceAlpha',
+    stdDeviation: blur
+  })
   const offset = createElNS('feOffset', { dx: offsetX, dy: offsetY })
   const merge = createElNS('feMerge')
   const mergeNodeA = createElNS('feMergeNode')
