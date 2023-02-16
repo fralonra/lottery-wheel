@@ -83,6 +83,7 @@ setTimeout(() => {
 | fontSize | The size of text for prizes. | Number | (auto generate) |
 | buttonWidth | The width of the button in `px`. | Number | 50 |
 | buttonFontSize | The size of text on the button. | Number | (auto generate) |
+| textRotate | If the text on each prize rotate 90 degrees. | Boolean | false |
 | limit | The maxium times the wheel can be run. | Number | 0 (unlimited) |
 | duration | How long will the animation last in millseconds. | Number | 5000 |
 | turn | The minimum amount of circles the wheel will turn during the animation. | Number | 4 |

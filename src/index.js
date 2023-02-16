@@ -40,6 +40,7 @@ class Wheel {
       buttonDeg: 80,
       buttonText: 'Draw',
       textBottomPercentage: 0.6,
+      textRotate: false,
       limit: 0,
       duration: 5000,
       turn: 4,
@@ -212,7 +213,16 @@ class Wheel {
         fontSize,
         fill: d.fontColor || opt.color.prizeFont
       })
-      const g = svg.g([pie, text])
+      if (this.option.textRotate) {
+        svg.rotate(
+          text,
+          degreeToRadians(90),
+          this._center[0],
+          opt.pos[1] + opt.radius - opt.inRadius * opt.textBottomPercentage
+        )
+      }
+      const gtext = svg.g([text])
+      const g = svg.g([pie, gtext])
       svg.rotate(
         g,
         degreeToRadians(this._deg * opt.data.indexOf(d)),
@@ -220,7 +230,11 @@ class Wheel {
         this._center[1]
       )
       this._turntable.appendChild(g)
-      svg.translate(text, -text.getComputedTextLength() / 2, 0)
+      if (this.option.textRotate) {
+        svg.translate(gtext, 0, -text.getComputedTextLength() / 2)
+      } else {
+        svg.translate(gtext, -text.getComputedTextLength() / 2, 0)
+      }
     }
   }
 
