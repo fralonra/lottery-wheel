@@ -3,10 +3,12 @@
   "version": "2.4.1",
   "description": "A library helps you performing a wheel for lottery game.",
   "main": "src/index.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "lint": "standard --fix src/*.js",
-    "prepare": "npm run build",
     "test": "npm run lint"
   },
   "repository": {

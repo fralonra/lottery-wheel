@@ -57,6 +57,4 @@ typings/
 # dotenv environment variables file
 .env
 
-# lock file
-package-lock.json
-yarn.lock
+dist

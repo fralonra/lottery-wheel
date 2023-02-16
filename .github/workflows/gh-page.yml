@@ -1,0 +1,23 @@
+name: Build and Deploy to Github Pages
+
+on: [push]
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+      - name: Copy
+        run: |
+          mv dist demo
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages
+          folder: demo
