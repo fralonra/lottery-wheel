@@ -4,7 +4,7 @@
 
 A library helps you performing a wheel for lottery game. Using [anime.js](https://github.com/juliangarnier/anime/) underlying.
 
-[demo](https://fralonra.github.io/lottery-wheel/demo/)
+[demo](https://fralonra.github.io/lottery-wheel/)
 
 # Usage
 
