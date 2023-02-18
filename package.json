@@ -1,6 +1,6 @@
 {
   "name": "lottery-wheel",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "A library helps you performing a wheel for lottery game.",
   "main": "src/index.js",
   "types": "index.d.ts",
