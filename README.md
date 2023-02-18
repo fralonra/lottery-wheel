@@ -75,7 +75,7 @@ setTimeout(() => {
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| el | The element where the wheel mounted. [Details](#el). | Object | - |
+| el | The element where the wheel mounted. [Details](#el). | HTMLElement | - |
 | data | An array of prizes. [Details](#data). | Array | - |
 | pos | The top-left corner of the wheel related to its parent element (the `el` element). | Array | [0, 0]
 | radius | The radius of the wheel in `px`. | Number | 100 |
@@ -172,7 +172,7 @@ Called when the mouse is moving over the button.
 | Parameter | Description | Type |
 | --- | --- | --- |
 | anime | Refer to animejs. See the [doc](https://github.com/juliangarnier/anime) for usage.|  |
-| button | Refer to the Snap [Element](http://snapsvg.io/docs/#Element) where the button lies. | Object |
+| button | Refer to the [SVGImageElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGImageElement) where the button lies. | SVGImageElement |
 
 ```javascript
 const wheel = new Wheel({
