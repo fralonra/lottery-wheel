@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.com/fralonra/lottery-wheel.svg?branch=master)](https://travis-ci.com/fralonra/lottery-wheel)
 [![npm version](https://img.shields.io/npm/v/lottery-wheel.svg)](https://www.npmjs.com/package/lottery-wheel)
-[![Greenkeeper badge](https://badges.greenkeeper.io/fralonra/lottery-wheel.svg)](https://greenkeeper.io/)
 
 # lottery-wheel
 
