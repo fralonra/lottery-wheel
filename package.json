@@ -3,7 +3,9 @@
   "version": "2.5.0",
   "description": "A library helps you performing a wheel for lottery game.",
   "main": "src/index.js",
+  "types": "index.d.ts",
   "files": [
+    "index.d.ts",
     "src"
   ],
   "scripts": {
@@ -37,6 +39,7 @@
     "@commitlint/config-conventional": "^8.3.4",
     "@rollup/plugin-babel": "^5.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
+    "@types/animejs": "^3.1.7",
     "husky": "^4.2.5",
     "rollup": "^2.10.6",
     "rollup-plugin-filesize": "^6.0.0",
