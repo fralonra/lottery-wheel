@@ -35,7 +35,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
-    "@commitlint/cli": "^8.3.5",
+    "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^8.3.4",
     "@rollup/plugin-babel": "^5.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
